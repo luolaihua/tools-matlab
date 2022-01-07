@@ -1,0 +1,378 @@
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>RTW Report - generateOFDMSignal.c</title>
+<script language="JavaScript" type="text/javascript" src="rtwreport_utils.js"></script>
+<script src="resources/eml_report_loadable_data.js"></script>
+</head>
+<body bgcolor="#eeeeee" onload="try {if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window.document); else local_onload();}} catch(err) {};">
+<p>
+<table border="0" cellspacing="0" cellpadding="6" width="100%%" height="100%%"><tr><td width="100%%" valign="top" bgcolor="#ffffff">
+<h4>File: <a href="../generateOFDMSignal.c" target="rtwreport_document_frame" id="linkToText_plain">generateOFDMSignal.c</a></h4>
+<pre id="RTWcode">
+<a name="1"><font color="#888888 "><i>    1   </i></font></a><font color="#117755"><i>/*</i></font>
+<a name="2"><font color="#888888 "><i>    2   </i></font></a><font color="#117755"><I> * generateOFDMSignal.c</i></font>
+<a name="3"><font color="#888888 "><i>    3   </i></font></a><font color="#117755"><I> *</i></font>
+<a name="4"><font color="#888888 "><i>    4   </i></font></a><font color="#117755"><I> * Code generation for function 'generateOFDMSignal'</i></font>
+<a name="5"><font color="#888888 "><i>    5   </i></font></a><font color="#117755"><I> *</i></font>
+<a name="6"><font color="#888888 "><i>    6   </i></font></a><font color="#117755"><I> */</i></font>
+<a name="7"><font color="#888888 "><i>    7   </i></font></a>
+<a name="8"><font color="#888888 "><i>    8   </i></font></a><font color="#117755"><i>/* Include files */</i></font>
+<a name="9"><font color="#888888 "><i>    9   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;rt_nonfinite.h&quot;</font>
+<a name="10"><font color="#888888 "><i>   10   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;generateOFDMSignal.h&quot;</font>
+<a name="11"><font color="#888888 "><i>   11   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;eml_int_forloop_overflow_check.h&quot;</font>
+<a name="12"><font color="#888888 "><i>   12   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;OFDMTransmitter.h&quot;</font>
+<a name="13"><font color="#888888 "><i>   13   </i></font></a><font color="#992211">#</font><font color="#992211"><b>include</b></font> <font color="#992211">&quot;generateOFDMSignal_data.h&quot;</font>
+<a name="14"><font color="#888888 "><i>   14   </i></font></a>
+<a name="15"><font color="#888888 "><i>   15   </i></font></a><font color="#117755"><i>/* Variable Definitions */</i></font>
+<a name="16"><font color="#888888 "><i>   16   </i></font></a><font color="#112266"><b>static</b></font> <a href="generateOFDMSignal_types_h.html#type_OFDMTransmitter" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_OFDMTransmitter');" target="_self"><font color="#1122aa">OFDMTransmitter</font></a> <a name="var_OFDMTX">OFDMTX</a>;
+<a name="17"><font color="#888888 "><i>   17   </i></font></a><font color="#112266"><b>static</b></font> boolean_T <a name="var_OFDMTX_not_empty">OFDMTX_not_empty</a>;
+<a name="18"><font color="#888888 "><i>   18   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_emlrtRSI">emlrtRSI</a> = <b>{</b> 9,     <font color="#117755"><i>/* lineNo */</i></font>
+<a name="19"><font color="#888888 "><i>   19   </i></font></a>  <font color="#1122ff">&quot;generateOFDMSignal&quot;</font>,                <font color="#117755"><i>/* fcnName */</i></font>
+<a name="20"><font color="#888888 "><i>   20   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\generateOFDMSignal.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="21"><font color="#888888 "><i>   21   </i></font></a><b>}</b>;
+<a name="22"><font color="#888888 "><i>   22   </i></font></a>
+<a name="23"><font color="#888888 "><i>   23   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_b_emlrtRSI">b_emlrtRSI</a> = <b>{</b> 12,  <font color="#117755"><i>/* lineNo */</i></font>
+<a name="24"><font color="#888888 "><i>   24   </i></font></a>  <font color="#1122ff">&quot;generateOFDMSignal&quot;</font>,                <font color="#117755"><i>/* fcnName */</i></font>
+<a name="25"><font color="#888888 "><i>   25   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\generateOFDMSignal.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="26"><font color="#888888 "><i>   26   </i></font></a><b>}</b>;
+<a name="27"><font color="#888888 "><i>   27   </i></font></a>
+<a name="28"><font color="#888888 "><i>   28   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_c_emlrtRSI">c_emlrtRSI</a> = <b>{</b> 42,  <font color="#117755"><i>/* lineNo */</i></font>
+<a name="29"><font color="#888888 "><i>   29   </i></font></a>  <font color="#1122ff">&quot;OFDMTransmitter&quot;</font>,                   <font color="#117755"><i>/* fcnName */</i></font>
+<a name="30"><font color="#888888 "><i>   30   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\OFDMTransmitter.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="31"><font color="#888888 "><i>   31   </i></font></a><b>}</b>;
+<a name="32"><font color="#888888 "><i>   32   </i></font></a>
+<a name="33"><font color="#888888 "><i>   33   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_d_emlrtRSI">d_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="34"><font color="#888888 "><i>   34   </i></font></a>  <font color="#1122ff">&quot;System&quot;</font>,                            <font color="#117755"><i>/* fcnName */</i></font>
+<a name="35"><font color="#888888 "><i>   35   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\shared\\system\\coder\\+matlab\\+system\\+coder\\System.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="36"><font color="#888888 "><i>   36   </i></font></a><b>}</b>;
+<a name="37"><font color="#888888 "><i>   37   </i></font></a>
+<a name="38"><font color="#888888 "><i>   38   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_e_emlrtRSI">e_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="39"><font color="#888888 "><i>   39   </i></font></a>  <font color="#1122ff">&quot;SystemProp&quot;</font>,                        <font color="#117755"><i>/* fcnName */</i></font>
+<a name="40"><font color="#888888 "><i>   40   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\shared\\system\\coder\\+matlab\\+system\\+coder\\SystemProp.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="41"><font color="#888888 "><i>   41   </i></font></a><b>}</b>;
+<a name="42"><font color="#888888 "><i>   42   </i></font></a>
+<a name="43"><font color="#888888 "><i>   43   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_g_emlrtRSI">g_emlrtRSI</a> = <b>{</b> 98,  <font color="#117755"><i>/* lineNo */</i></font>
+<a name="44"><font color="#888888 "><i>   44   </i></font></a>  <font color="#1122ff">&quot;OFDMTransmitter&quot;</font>,                   <font color="#117755"><i>/* fcnName */</i></font>
+<a name="45"><font color="#888888 "><i>   45   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\OFDMTransmitter.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="46"><font color="#888888 "><i>   46   </i></font></a><b>}</b>;
+<a name="47"><font color="#888888 "><i>   47   </i></font></a>
+<a name="48"><font color="#888888 "><i>   48   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_h_emlrtRSI">h_emlrtRSI</a> = <b>{</b> 101, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="49"><font color="#888888 "><i>   49   </i></font></a>  <font color="#1122ff">&quot;OFDMTransmitter&quot;</font>,                   <font color="#117755"><i>/* fcnName */</i></font>
+<a name="50"><font color="#888888 "><i>   50   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\OFDMTransmitter.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="51"><font color="#888888 "><i>   51   </i></font></a><b>}</b>;
+<a name="52"><font color="#888888 "><i>   52   </i></font></a>
+<a name="53"><font color="#888888 "><i>   53   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_i_emlrtRSI">i_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="54"><font color="#888888 "><i>   54   </i></font></a>  <font color="#1122ff">&quot;BPSKModulator&quot;</font>,                     <font color="#117755"><i>/* fcnName */</i></font>
+<a name="55"><font color="#888888 "><i>   55   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\comm\\compiled\\+commcodegen\\BPSKModulator.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="56"><font color="#888888 "><i>   56   </i></font></a><b>}</b>;
+<a name="57"><font color="#888888 "><i>   57   </i></font></a>
+<a name="58"><font color="#888888 "><i>   58   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_j_emlrtRSI">j_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="59"><font color="#888888 "><i>   59   </i></font></a>  <font color="#1122ff">&quot;Nondirect&quot;</font>,                         <font color="#117755"><i>/* fcnName */</i></font>
+<a name="60"><font color="#888888 "><i>   60   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\shared\\system\\coder\\+matlab\\+system\\+mixin\\+coder\\Nondirect.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="61"><font color="#888888 "><i>   61   </i></font></a><b>}</b>;
+<a name="62"><font color="#888888 "><i>   62   </i></font></a>
+<a name="63"><font color="#888888 "><i>   63   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_k_emlrtRSI">k_emlrtRSI</a> = <b>{</b> 85,  <font color="#117755"><i>/* lineNo */</i></font>
+<a name="64"><font color="#888888 "><i>   64   </i></font></a>  <font color="#1122ff">&quot;OFDMBase&quot;</font>,                          <font color="#117755"><i>/* fcnName */</i></font>
+<a name="65"><font color="#888888 "><i>   65   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\comm\\+comm\\+internal\\OFDMBase.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="66"><font color="#888888 "><i>   66   </i></font></a><b>}</b>;
+<a name="67"><font color="#888888 "><i>   67   </i></font></a>
+<a name="68"><font color="#888888 "><i>   68   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_l_emlrtRSI">l_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="69"><font color="#888888 "><i>   69   </i></font></a>  <font color="#1122ff">&quot;Propagates&quot;</font>,                        <font color="#117755"><i>/* fcnName */</i></font>
+<a name="70"><font color="#888888 "><i>   70   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\shared\\system\\coder\\+matlab\\+system\\+mixin\\+coder\\Propagates.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="71"><font color="#888888 "><i>   71   </i></font></a><b>}</b>;
+<a name="72"><font color="#888888 "><i>   72   </i></font></a>
+<a name="73"><font color="#888888 "><i>   73   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_m_emlrtRSI">m_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="74"><font color="#888888 "><i>   74   </i></font></a>  <font color="#1122ff">&quot;CustomIcon&quot;</font>,                        <font color="#117755"><i>/* fcnName */</i></font>
+<a name="75"><font color="#888888 "><i>   75   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\matlab\\system\\+matlab\\+system\\+mixin\\CustomIcon.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="76"><font color="#888888 "><i>   76   </i></font></a><b>}</b>;
+<a name="77"><font color="#888888 "><i>   77   </i></font></a>
+<a name="78"><font color="#888888 "><i>   78   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_n_emlrtRSI">n_emlrtRSI</a> = <b>{</b> 272, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="79"><font color="#888888 "><i>   79   </i></font></a>  <font color="#1122ff">&quot;OFDMModulator&quot;</font>,                     <font color="#117755"><i>/* fcnName */</i></font>
+<a name="80"><font color="#888888 "><i>   80   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\comm\\+comm\\OFDMModulator.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="81"><font color="#888888 "><i>   81   </i></font></a><b>}</b>;
+<a name="82"><font color="#888888 "><i>   82   </i></font></a>
+<a name="83"><font color="#888888 "><i>   83   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_o_emlrtRSI">o_emlrtRSI</a> = <b>{</b> 286, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="84"><font color="#888888 "><i>   84   </i></font></a>  <font color="#1122ff">&quot;OFDMModulator&quot;</font>,                     <font color="#117755"><i>/* fcnName */</i></font>
+<a name="85"><font color="#888888 "><i>   85   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\comm\\+comm\\OFDMModulator.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="86"><font color="#888888 "><i>   86   </i></font></a><b>}</b>;
+<a name="87"><font color="#888888 "><i>   87   </i></font></a>
+<a name="88"><font color="#888888 "><i>   88   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_p_emlrtRSI">p_emlrtRSI</a> = <b>{</b> 1,   <font color="#117755"><i>/* lineNo */</i></font>
+<a name="89"><font color="#888888 "><i>   89   </i></font></a>  <font color="#1122ff">&quot;pvParse&quot;</font>,                           <font color="#117755"><i>/* fcnName */</i></font>
+<a name="90"><font color="#888888 "><i>   90   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\matlab\\system\\+matlab\\+system\\pvParse.p&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="91"><font color="#888888 "><i>   91   </i></font></a><b>}</b>;
+<a name="92"><font color="#888888 "><i>   92   </i></font></a>
+<a name="93"><font color="#888888 "><i>   93   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_q_emlrtRSI">q_emlrtRSI</a> = <b>{</b> 139, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="94"><font color="#888888 "><i>   94   </i></font></a>  <font color="#1122ff">&quot;OFDMBase&quot;</font>,                          <font color="#117755"><i>/* fcnName */</i></font>
+<a name="95"><font color="#888888 "><i>   95   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\comm\\+comm\\+internal\\OFDMBase.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="96"><font color="#888888 "><i>   96   </i></font></a><b>}</b>;
+<a name="97"><font color="#888888 "><i>   97   </i></font></a>
+<a name="98"><font color="#888888 "><i>   98   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_r_emlrtRSI">r_emlrtRSI</a> = <b>{</b> 44,  <font color="#117755"><i>/* lineNo */</i></font>
+<a name="99"><font color="#888888 "><i>   99   </i></font></a>  <font color="#1122ff">&quot;unique&quot;</font>,                            <font color="#117755"><i>/* fcnName */</i></font>
+<a name="100"><font color="#888888 "><i>  100   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\eml\\lib\\matlab\\ops\\unique.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="101"><font color="#888888 "><i>  101   </i></font></a><b>}</b>;
+<a name="102"><font color="#888888 "><i>  102   </i></font></a>
+<a name="103"><font color="#888888 "><i>  103   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_s_emlrtRSI">s_emlrtRSI</a> = <b>{</b> 226, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="104"><font color="#888888 "><i>  104   </i></font></a>  <font color="#1122ff">&quot;unique&quot;</font>,                            <font color="#117755"><i>/* fcnName */</i></font>
+<a name="105"><font color="#888888 "><i>  105   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\eml\\lib\\matlab\\ops\\unique.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="106"><font color="#888888 "><i>  106   </i></font></a><b>}</b>;
+<a name="107"><font color="#888888 "><i>  107   </i></font></a>
+<a name="108"><font color="#888888 "><i>  108   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_t_emlrtRSI">t_emlrtRSI</a> = <b>{</b> 220, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="109"><font color="#888888 "><i>  109   </i></font></a>  <font color="#1122ff">&quot;unique&quot;</font>,                            <font color="#117755"><i>/* fcnName */</i></font>
+<a name="110"><font color="#888888 "><i>  110   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\eml\\lib\\matlab\\ops\\unique.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="111"><font color="#888888 "><i>  111   </i></font></a><b>}</b>;
+<a name="112"><font color="#888888 "><i>  112   </i></font></a>
+<a name="113"><font color="#888888 "><i>  113   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_u_emlrtRSI">u_emlrtRSI</a> = <b>{</b> 212, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="114"><font color="#888888 "><i>  114   </i></font></a>  <font color="#1122ff">&quot;unique&quot;</font>,                            <font color="#117755"><i>/* fcnName */</i></font>
+<a name="115"><font color="#888888 "><i>  115   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\eml\\lib\\matlab\\ops\\unique.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="116"><font color="#888888 "><i>  116   </i></font></a><b>}</b>;
+<a name="117"><font color="#888888 "><i>  117   </i></font></a>
+<a name="118"><font color="#888888 "><i>  118   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_v_emlrtRSI">v_emlrtRSI</a> = <b>{</b> 21,  <font color="#117755"><i>/* lineNo */</i></font>
+<a name="119"><font color="#888888 "><i>  119   </i></font></a>  <font color="#1122ff">&quot;eml_int_forloop_overflow_check&quot;</font>,    <font color="#117755"><i>/* fcnName */</i></font>
+<a name="120"><font color="#888888 "><i>  120   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\eml\\lib\\matlab\\eml\\eml_int_forloop_overflow_check.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="121"><font color="#888888 "><i>  121   </i></font></a><b>}</b>;
+<a name="122"><font color="#888888 "><i>  122   </i></font></a>
+<a name="123"><font color="#888888 "><i>  123   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_x_emlrtRSI">x_emlrtRSI</a> = <b>{</b> 112, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="124"><font color="#888888 "><i>  124   </i></font></a>  <font color="#1122ff">&quot;OFDMTransmitter&quot;</font>,                   <font color="#117755"><i>/* fcnName */</i></font>
+<a name="125"><font color="#888888 "><i>  125   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\OFDMTransmitter.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="126"><font color="#888888 "><i>  126   </i></font></a><b>}</b>;
+<a name="127"><font color="#888888 "><i>  127   </i></font></a>
+<a name="128"><font color="#888888 "><i>  128   </i></font></a><font color="#112266"><b>static</b></font> emlrtRSInfo <a name="var_y_emlrtRSI">y_emlrtRSI</a> = <b>{</b> 113, <font color="#117755"><i>/* lineNo */</i></font>
+<a name="129"><font color="#888888 "><i>  129   </i></font></a>  <font color="#1122ff">&quot;OFDMTransmitter&quot;</font>,                   <font color="#117755"><i>/* fcnName */</i></font>
+<a name="130"><font color="#888888 "><i>  130   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\commdemos\\OFDMTransmitter.m&quot;</font><font color="#117755"><i>/* pathName */</i></font>
+<a name="131"><font color="#888888 "><i>  131   </i></font></a><b>}</b>;
+<a name="132"><font color="#888888 "><i>  132   </i></font></a>
+<a name="133"><font color="#888888 "><i>  133   </i></font></a><font color="#112266"><b>static</b></font> emlrtRTEInfo <a name="var_b_emlrtRTEI">b_emlrtRTEI</a> = <b>{</b> 139,<font color="#117755"><i>/* lineNo */</i></font>
+<a name="134"><font color="#888888 "><i>  134   </i></font></a>  9,                                   <font color="#117755"><i>/* colNo */</i></font>
+<a name="135"><font color="#888888 "><i>  135   </i></font></a>  <font color="#1122ff">&quot;OFDMBase&quot;</font>,                          <font color="#117755"><i>/* fName */</i></font>
+<a name="136"><font color="#888888 "><i>  136   </i></font></a>  <font color="#1122ff">&quot;C:\\Program Files\\MATLAB\\R2017a\\toolbox\\comm\\comm\\+comm\\+internal\\OFDMBase.m&quot;</font><font color="#117755"><i>/* pName */</i></font>
+<a name="137"><font color="#888888 "><i>  137   </i></font></a><b>}</b>;
+<a name="138"><font color="#888888 "><i>  138   </i></font></a>
+<a name="139"><font color="#888888 "><i>  139   </i></font></a><font color="#117755"><i>/* Function Definitions */</i></font>
+<a name="140"><font color="#888888 "><i>  140   </i></font></a><font color="#112266"><b>void</b></font> <a name="fcn_generateOFDMSignal">generateOFDMSignal</a>(<font color="#112266"><b>const</b></font> emlrtStack *sp, creal_T txSig[128000], real_T
+<a name="141"><font color="#888888 "><i>  141   </i></font></a>  *frameLen)
+<a name="142"><font color="#888888 "><i>  142   </i></font></a><b>{</b>
+<a name="143"><font color="#888888 "><i>  143   </i></font></a>  <a href="generateOFDMSignal_types_h.html#type_OFDMTransmitter" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_OFDMTransmitter');" target="_self"><font color="#1122aa">OFDMTransmitter</font></a> *obj;
+<a name="144"><font color="#888888 "><i>  144   </i></font></a>  <a href="generateOFDMSignal_types_h.html#type_commcodegen_BPSKModulator" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_commcodegen_BPSKModulator');" target="_self"><font color="#1122aa">commcodegen_BPSKModulator</font></a> *b_obj;
+<a name="145"><font color="#888888 "><i>  145   </i></font></a>  int32_T i;
+<a name="146"><font color="#888888 "><i>  146   </i></font></a>  <font color="#112266"><b>static</b></font> <font color="#112266"><b>const</b></font> real_T dv0[4] = <b>{</b> 1.0, 0.0, -1.0, 1.2246467991473532E-16 <b>}</b>;
+<a name="147"><font color="#888888 "><i>  147   </i></font></a>
+<a name="148"><font color="#888888 "><i>  148   </i></font></a>  int32_T nb;
+<a name="149"><font color="#888888 "><i>  149   </i></font></a>  int8_T tmp_data[4];
+<a name="150"><font color="#888888 "><i>  150   </i></font></a>  int32_T x;
+<a name="151"><font color="#888888 "><i>  151   </i></font></a>  int32_T exitg1;
+<a name="152"><font color="#888888 "><i>  152   </i></font></a>  int32_T exponent;
+<a name="153"><font color="#888888 "><i>  153   </i></font></a>  int32_T i0;
+<a name="154"><font color="#888888 "><i>  154   </i></font></a>  emlrtStack st;
+<a name="155"><font color="#888888 "><i>  155   </i></font></a>  emlrtStack b_st;
+<a name="156"><font color="#888888 "><i>  156   </i></font></a>  emlrtStack c_st;
+<a name="157"><font color="#888888 "><i>  157   </i></font></a>  emlrtStack d_st;
+<a name="158"><font color="#888888 "><i>  158   </i></font></a>  emlrtStack e_st;
+<a name="159"><font color="#888888 "><i>  159   </i></font></a>  emlrtStack f_st;
+<a name="160"><font color="#888888 "><i>  160   </i></font></a>  emlrtStack g_st;
+<a name="161"><font color="#888888 "><i>  161   </i></font></a>  emlrtStack h_st;
+<a name="162"><font color="#888888 "><i>  162   </i></font></a>  emlrtStack i_st;
+<a name="163"><font color="#888888 "><i>  163   </i></font></a>  emlrtStack j_st;
+<a name="164"><font color="#888888 "><i>  164   </i></font></a>  emlrtStack k_st;
+<a name="165"><font color="#888888 "><i>  165   </i></font></a>  emlrtStack l_st;
+<a name="166"><font color="#888888 "><i>  166   </i></font></a>  emlrtStack m_st;
+<a name="167"><font color="#888888 "><i>  167   </i></font></a>  emlrtStack n_st;
+<a name="168"><font color="#888888 "><i>  168   </i></font></a>  st.prev = sp;
+<a name="169"><font color="#888888 "><i>  169   </i></font></a>  st.tls = sp-&gt;tls;
+<a name="170"><font color="#888888 "><i>  170   </i></font></a>  b_st.prev = &amp;st;
+<a name="171"><font color="#888888 "><i>  171   </i></font></a>  b_st.tls = st.tls;
+<a name="172"><font color="#888888 "><i>  172   </i></font></a>  c_st.prev = &amp;b_st;
+<a name="173"><font color="#888888 "><i>  173   </i></font></a>  c_st.tls = b_st.tls;
+<a name="174"><font color="#888888 "><i>  174   </i></font></a>  d_st.prev = &amp;c_st;
+<a name="175"><font color="#888888 "><i>  175   </i></font></a>  d_st.tls = c_st.tls;
+<a name="176"><font color="#888888 "><i>  176   </i></font></a>  e_st.prev = &amp;d_st;
+<a name="177"><font color="#888888 "><i>  177   </i></font></a>  e_st.tls = d_st.tls;
+<a name="178"><font color="#888888 "><i>  178   </i></font></a>  f_st.prev = &amp;e_st;
+<a name="179"><font color="#888888 "><i>  179   </i></font></a>  f_st.tls = e_st.tls;
+<a name="180"><font color="#888888 "><i>  180   </i></font></a>  g_st.prev = &amp;f_st;
+<a name="181"><font color="#888888 "><i>  181   </i></font></a>  g_st.tls = f_st.tls;
+<a name="182"><font color="#888888 "><i>  182   </i></font></a>  h_st.prev = &amp;g_st;
+<a name="183"><font color="#888888 "><i>  183   </i></font></a>  h_st.tls = g_st.tls;
+<a name="184"><font color="#888888 "><i>  184   </i></font></a>  i_st.prev = &amp;h_st;
+<a name="185"><font color="#888888 "><i>  185   </i></font></a>  i_st.tls = h_st.tls;
+<a name="186"><font color="#888888 "><i>  186   </i></font></a>  j_st.prev = &amp;i_st;
+<a name="187"><font color="#888888 "><i>  187   </i></font></a>  j_st.tls = i_st.tls;
+<a name="188"><font color="#888888 "><i>  188   </i></font></a>  k_st.prev = &amp;j_st;
+<a name="189"><font color="#888888 "><i>  189   </i></font></a>  k_st.tls = j_st.tls;
+<a name="190"><font color="#888888 "><i>  190   </i></font></a>  l_st.prev = &amp;k_st;
+<a name="191"><font color="#888888 "><i>  191   </i></font></a>  l_st.tls = k_st.tls;
+<a name="192"><font color="#888888 "><i>  192   </i></font></a>  m_st.prev = &amp;l_st;
+<a name="193"><font color="#888888 "><i>  193   </i></font></a>  m_st.tls = l_st.tls;
+<a name="194"><font color="#888888 "><i>  194   </i></font></a>  n_st.prev = &amp;m_st;
+<a name="195"><font color="#888888 "><i>  195   </i></font></a>  n_st.tls = m_st.tls;
+<a name="196"><font color="#888888 "><i>  196   </i></font></a>
+<a name="197"><font color="#888888 "><i>  197   </i></font></a>  <font color="#117755"><i>/* GENERATEOFDMSIGNAL: Generate OFDM signal based on the 802.11a standard. */</i></font>
+<a name="198"><font color="#888888 "><i>  198   </i></font></a>  <font color="#117755"><i>/*  This function returns the time domain signal and the frame length. */</i></font>
+<a name="199"><font color="#888888 "><i>  199   </i></font></a>  <font color="#117755"><i>/*  Copyright 2013-2016 The MathWorks, Inc. */</i></font>
+<a name="200"><font color="#888888 "><i>  200   </i></font></a>  <font color="#112266"><b>if</b></font> (!<a href="#var_OFDMTX_not_empty" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_OFDMTX_not_empty');" target="_self"><font color="#1122aa">OFDMTX_not_empty</font></a>) <b>{</b>
+<a name="201"><font color="#888888 "><i>  201   </i></font></a>    st.site = &amp;<a href="#var_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRSI');" target="_self"><font color="#1122aa">emlrtRSI</font></a>;
+<a name="202"><font color="#888888 "><i>  202   </i></font></a>    b_st.site = &amp;<a href="#var_c_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_c_emlrtRSI');" target="_self"><font color="#1122aa">c_emlrtRSI</font></a>;
+<a name="203"><font color="#888888 "><i>  203   </i></font></a>    c_st.site = &amp;<a href="#var_d_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_d_emlrtRSI');" target="_self"><font color="#1122aa">d_emlrtRSI</font></a>;
+<a name="204"><font color="#888888 "><i>  204   </i></font></a>    d_st.site = &amp;<a href="#var_e_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_e_emlrtRSI');" target="_self"><font color="#1122aa">e_emlrtRSI</font></a>;
+<a name="205"><font color="#888888 "><i>  205   </i></font></a>    c_st.site = &amp;<a href="#var_d_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_d_emlrtRSI');" target="_self"><font color="#1122aa">d_emlrtRSI</font></a>;
+<a name="206"><font color="#888888 "><i>  206   </i></font></a>    <a href="#var_OFDMTX" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_OFDMTX');" target="_self"><font color="#1122aa">OFDMTX</font></a>.isInitialized = 0;
+<a name="207"><font color="#888888 "><i>  207   </i></font></a>    d_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="208"><font color="#888888 "><i>  208   </i></font></a>    <a href="#var_OFDMTX_not_empty" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_OFDMTX_not_empty');" target="_self"><font color="#1122aa">OFDMTX_not_empty</font></a> = true;
+<a name="209"><font color="#888888 "><i>  209   </i></font></a>  <b>}</b>
+<a name="210"><font color="#888888 "><i>  210   </i></font></a>
+<a name="211"><font color="#888888 "><i>  211   </i></font></a>  st.site = &amp;<a href="#var_b_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_b_emlrtRSI');" target="_self"><font color="#1122aa">b_emlrtRSI</font></a>;
+<a name="212"><font color="#888888 "><i>  212   </i></font></a>  obj = &amp;<a href="#var_OFDMTX" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_OFDMTX');" target="_self"><font color="#1122aa">OFDMTX</font></a>;
+<a name="213"><font color="#888888 "><i>  213   </i></font></a>  b_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="214"><font color="#888888 "><i>  214   </i></font></a>  <font color="#112266"><b>if</b></font> (<a href="#var_OFDMTX" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_OFDMTX');" target="_self"><font color="#1122aa">OFDMTX</font></a>.isInitialized == 2) <b>{</b>
+<a name="215"><font color="#888888 "><i>  215   </i></font></a>    emlrtErrorWithMessageIdR2012b(&amp;b_st, &amp;<a href="generateOFDMSignal_data_c.html#var_emlrtRTEI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRTEI');" target="_self"><font color="#1122aa">emlrtRTEI</font></a>,
+<a name="216"><font color="#888888 "><i>  216   </i></font></a>      <font color="#1122ff">&quot;MATLAB:system:methodCalledWhenReleasedCodegen&quot;</font>, 3, 4, 4, <font color="#1122ff">&quot;step&quot;</font>);
+<a name="217"><font color="#888888 "><i>  217   </i></font></a>  <b>}</b>
+<a name="218"><font color="#888888 "><i>  218   </i></font></a>
+<a name="219"><font color="#888888 "><i>  219   </i></font></a>  <font color="#112266"><b>if</b></font> (obj-&gt;isInitialized != 1) <b>{</b>
+<a name="220"><font color="#888888 "><i>  220   </i></font></a>    c_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="221"><font color="#888888 "><i>  221   </i></font></a>    d_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="222"><font color="#888888 "><i>  222   </i></font></a>    <font color="#112266"><b>if</b></font> (obj-&gt;isInitialized != 0) <b>{</b>
+<a name="223"><font color="#888888 "><i>  223   </i></font></a>      emlrtErrorWithMessageIdR2012b(&amp;d_st, &amp;<a href="generateOFDMSignal_data_c.html#var_emlrtRTEI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRTEI');" target="_self"><font color="#1122aa">emlrtRTEI</font></a>,
+<a name="224"><font color="#888888 "><i>  224   </i></font></a>        <font color="#1122ff">&quot;MATLAB:system:methodCalledWhenLockedReleasedCodegen&quot;</font>, 3, 4, 5, <font color="#1122ff">&quot;setup&quot;</font>);
+<a name="225"><font color="#888888 "><i>  225   </i></font></a>    <b>}</b>
+<a name="226"><font color="#888888 "><i>  226   </i></font></a>
+<a name="227"><font color="#888888 "><i>  227   </i></font></a>    obj-&gt;isInitialized = 1;
+<a name="228"><font color="#888888 "><i>  228   </i></font></a>    e_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="229"><font color="#888888 "><i>  229   </i></font></a>
+<a name="230"><font color="#888888 "><i>  230   </i></font></a>    <font color="#117755"><i>/*  OFDMTransmitter Generate OFDM signal repeatedly for a payload message */</i></font>
+<a name="231"><font color="#888888 "><i>  231   </i></font></a>    <font color="#117755"><i>/*  based on the 802.11a standard. */</i></font>
+<a name="232"><font color="#888888 "><i>  232   </i></font></a>    <font color="#117755"><i>/*  Copyright 2014-2016 The MathWorks, Inc. */</i></font>
+<a name="233"><font color="#888888 "><i>  233   </i></font></a>    <font color="#117755"><i>/* SampleRate Sample rate     */</i></font>
+<a name="234"><font color="#888888 "><i>  234   </i></font></a>    <font color="#117755"><i>/* PayloadMessage Payload message */</i></font>
+<a name="235"><font color="#888888 "><i>  235   </i></font></a>    <font color="#117755"><i>/* NumFrames Number of frames to transmit */</i></font>
+<a name="236"><font color="#888888 "><i>  236   </i></font></a>    <font color="#117755"><i>/* FrameLength Frame length */</i></font>
+<a name="237"><font color="#888888 "><i>  237   </i></font></a>    <font color="#117755"><i>/*  Number of bits from payload message */</i></font>
+<a name="238"><font color="#888888 "><i>  238   </i></font></a>    <font color="#117755"><i>/*  Number of random bits padded in each frame */</i></font>
+<a name="239"><font color="#888888 "><i>  239   </i></font></a>    <font color="#117755"><i>/*  Number of OFDM symbols per frame */</i></font>
+<a name="240"><font color="#888888 "><i>  240   </i></font></a>    <font color="#117755"><i>/*  Preamble for each frame */</i></font>
+<a name="241"><font color="#888888 "><i>  241   </i></font></a>    <font color="#117755"><i>/*  Pilots for each frame */</i></font>
+<a name="242"><font color="#888888 "><i>  242   </i></font></a>    <font color="#117755"><i>/*  BPSK Modulator System object */</i></font>
+<a name="243"><font color="#888888 "><i>  243   </i></font></a>    <font color="#117755"><i>/*  OFDM Modulator System object  */</i></font>
+<a name="244"><font color="#888888 "><i>  244   </i></font></a>    <font color="#117755"><i>/*  OFDM Modulator configuration */</i></font>
+<a name="245"><font color="#888888 "><i>  245   </i></font></a>    <font color="#117755"><i>/*  Convert message to bits */</i></font>
+<a name="246"><font color="#888888 "><i>  246   </i></font></a>    <font color="#117755"><i>/*  Calculate number of OFDM symbols per frame */</i></font>
+<a name="247"><font color="#888888 "><i>  247   </i></font></a>    <font color="#117755"><i>/*  Calculate number of bits padded in each frame */</i></font>
+<a name="248"><font color="#888888 "><i>  248   </i></font></a>    <font color="#117755"><i>/*  Get preamble for each frame */</i></font>
+<a name="249"><font color="#888888 "><i>  249   </i></font></a>    <font color="#117755"><i>/*  Get pilot for each frame */</i></font>
+<a name="250"><font color="#888888 "><i>  250   </i></font></a>    <font color="#117755"><i>/*  BPSK modulator */</i></font>
+<a name="251"><font color="#888888 "><i>  251   </i></font></a>    f_st.site = &amp;<a href="#var_g_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_g_emlrtRSI');" target="_self"><font color="#1122aa">g_emlrtRSI</font></a>;
+<a name="252"><font color="#888888 "><i>  252   </i></font></a>    b_obj = &amp;obj-&gt;pBPSKMod;
+<a name="253"><font color="#888888 "><i>  253   </i></font></a>    g_st.site = &amp;<a href="#var_i_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_i_emlrtRSI');" target="_self"><font color="#1122aa">i_emlrtRSI</font></a>;
+<a name="254"><font color="#888888 "><i>  254   </i></font></a>    h_st.site = &amp;<a href="#var_d_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_d_emlrtRSI');" target="_self"><font color="#1122aa">d_emlrtRSI</font></a>;
+<a name="255"><font color="#888888 "><i>  255   </i></font></a>    i_st.site = &amp;<a href="#var_e_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_e_emlrtRSI');" target="_self"><font color="#1122aa">e_emlrtRSI</font></a>;
+<a name="256"><font color="#888888 "><i>  256   </i></font></a>    h_st.site = &amp;<a href="#var_d_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_d_emlrtRSI');" target="_self"><font color="#1122aa">d_emlrtRSI</font></a>;
+<a name="257"><font color="#888888 "><i>  257   </i></font></a>    obj-&gt;pBPSKMod.isInitialized = 0;
+<a name="258"><font color="#888888 "><i>  258   </i></font></a>    i_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="259"><font color="#888888 "><i>  259   </i></font></a>    g_st.site = &amp;<a href="#var_i_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_i_emlrtRSI');" target="_self"><font color="#1122aa">i_emlrtRSI</font></a>;
+<a name="260"><font color="#888888 "><i>  260   </i></font></a>    h_st.site = &amp;<a href="#var_j_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_j_emlrtRSI');" target="_self"><font color="#1122aa">j_emlrtRSI</font></a>;
+<a name="261"><font color="#888888 "><i>  261   </i></font></a>    g_st.site = &amp;<a href="#var_i_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_i_emlrtRSI');" target="_self"><font color="#1122aa">i_emlrtRSI</font></a>;
+<a name="262"><font color="#888888 "><i>  262   </i></font></a>
+<a name="263"><font color="#888888 "><i>  263   </i></font></a>    <font color="#117755"><i>/* System object Constructor function: comm.BPSKModulator */</i></font>
+<a name="264"><font color="#888888 "><i>  264   </i></font></a>    <font color="#112266"><b>for</b></font> (i = 0; i &lt; 4; i++) <b>{</b>
+<a name="265"><font color="#888888 "><i>  265   </i></font></a>      b_obj-&gt;cSFunObject.P0_modmap[i] = dv0[i];
+<a name="266"><font color="#888888 "><i>  266   </i></font></a>    <b>}</b>
+<a name="267"><font color="#888888 "><i>  267   </i></font></a>
+<a name="268"><font color="#888888 "><i>  268   </i></font></a>    <font color="#117755"><i>/*  OFDM modulator */</i></font>
+<a name="269"><font color="#888888 "><i>  269   </i></font></a>    f_st.site = &amp;<a href="#var_h_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_h_emlrtRSI');" target="_self"><font color="#1122aa">h_emlrtRSI</font></a>;
+<a name="270"><font color="#888888 "><i>  270   </i></font></a>    g_st.site = &amp;<a href="#var_n_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_n_emlrtRSI');" target="_self"><font color="#1122aa">n_emlrtRSI</font></a>;
+<a name="271"><font color="#888888 "><i>  271   </i></font></a>    h_st.site = &amp;<a href="#var_k_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_k_emlrtRSI');" target="_self"><font color="#1122aa">k_emlrtRSI</font></a>;
+<a name="272"><font color="#888888 "><i>  272   </i></font></a>    i_st.site = &amp;<a href="#var_d_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_d_emlrtRSI');" target="_self"><font color="#1122aa">d_emlrtRSI</font></a>;
+<a name="273"><font color="#888888 "><i>  273   </i></font></a>    j_st.site = &amp;<a href="#var_e_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_e_emlrtRSI');" target="_self"><font color="#1122aa">e_emlrtRSI</font></a>;
+<a name="274"><font color="#888888 "><i>  274   </i></font></a>    i_st.site = &amp;<a href="#var_d_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_d_emlrtRSI');" target="_self"><font color="#1122aa">d_emlrtRSI</font></a>;
+<a name="275"><font color="#888888 "><i>  275   </i></font></a>    obj-&gt;pDataOFDMMod.isInitialized = 0;
+<a name="276"><font color="#888888 "><i>  276   </i></font></a>    j_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="277"><font color="#888888 "><i>  277   </i></font></a>    h_st.site = &amp;<a href="#var_k_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_k_emlrtRSI');" target="_self"><font color="#1122aa">k_emlrtRSI</font></a>;
+<a name="278"><font color="#888888 "><i>  278   </i></font></a>    i_st.site = &amp;<a href="#var_l_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_l_emlrtRSI');" target="_self"><font color="#1122aa">l_emlrtRSI</font></a>;
+<a name="279"><font color="#888888 "><i>  279   </i></font></a>    h_st.site = &amp;<a href="#var_k_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_k_emlrtRSI');" target="_self"><font color="#1122aa">k_emlrtRSI</font></a>;
+<a name="280"><font color="#888888 "><i>  280   </i></font></a>    i_st.site = &amp;<a href="#var_m_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_m_emlrtRSI');" target="_self"><font color="#1122aa">m_emlrtRSI</font></a>;
+<a name="281"><font color="#888888 "><i>  281   </i></font></a>    g_st.site = &amp;<a href="#var_o_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_o_emlrtRSI');" target="_self"><font color="#1122aa">o_emlrtRSI</font></a>;
+<a name="282"><font color="#888888 "><i>  282   </i></font></a>    h_st.site = &amp;<a href="#var_e_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_e_emlrtRSI');" target="_self"><font color="#1122aa">e_emlrtRSI</font></a>;
+<a name="283"><font color="#888888 "><i>  283   </i></font></a>    i_st.site = &amp;<a href="#var_e_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_e_emlrtRSI');" target="_self"><font color="#1122aa">e_emlrtRSI</font></a>;
+<a name="284"><font color="#888888 "><i>  284   </i></font></a>    j_st.site = &amp;<a href="#var_p_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_p_emlrtRSI');" target="_self"><font color="#1122aa">p_emlrtRSI</font></a>;
+<a name="285"><font color="#888888 "><i>  285   </i></font></a>    k_st.site = &amp;<a href="#var_q_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_q_emlrtRSI');" target="_self"><font color="#1122aa">q_emlrtRSI</font></a>;
+<a name="286"><font color="#888888 "><i>  286   </i></font></a>    l_st.site = &amp;<a href="#var_r_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_r_emlrtRSI');" target="_self"><font color="#1122aa">r_emlrtRSI</font></a>;
+<a name="287"><font color="#888888 "><i>  287   </i></font></a>    <font color="#112266"><b>for</b></font> (i = 0; i &lt; 4; i++) <b>{</b>
+<a name="288"><font color="#888888 "><i>  288   </i></font></a>      tmp_data[i] = (int8_T)(12 + 14 * i);
+<a name="289"><font color="#888888 "><i>  289   </i></font></a>    <b>}</b>
+<a name="290"><font color="#888888 "><i>  290   </i></font></a>
+<a name="291"><font color="#888888 "><i>  291   </i></font></a>    nb = 0;
+<a name="292"><font color="#888888 "><i>  292   </i></font></a>    i = 1;
+<a name="293"><font color="#888888 "><i>  293   </i></font></a>    <font color="#112266"><b>while</b></font> (i &lt;= 4) <b>{</b>
+<a name="294"><font color="#888888 "><i>  294   </i></font></a>      x = tmp_data[i - 1];
+<a name="295"><font color="#888888 "><i>  295   </i></font></a>      <font color="#112266"><b>do</b></font> <b>{</b>
+<a name="296"><font color="#888888 "><i>  296   </i></font></a>        exitg1 = 0;
+<a name="297"><font color="#888888 "><i>  297   </i></font></a>        i++;
+<a name="298"><font color="#888888 "><i>  298   </i></font></a>        <font color="#112266"><b>if</b></font> (i &gt; 4) <b>{</b>
+<a name="299"><font color="#888888 "><i>  299   </i></font></a>          exitg1 = 1;
+<a name="300"><font color="#888888 "><i>  300   </i></font></a>        <b>}</b> <font color="#112266"><b>else</b></font> <b>{</b>
+<a name="301"><font color="#888888 "><i>  301   </i></font></a>          frexp((real_T)x / 2.0, &amp;exponent);
+<a name="302"><font color="#888888 "><i>  302   </i></font></a>          <font color="#112266"><b>if</b></font> (!(muDoubleScalarAbs(x - tmp_data[i - 1]) &lt; ldexp(1.0, exponent -
+<a name="303"><font color="#888888 "><i>  303   </i></font></a>                53))) <b>{</b>
+<a name="304"><font color="#888888 "><i>  304   </i></font></a>            exitg1 = 1;
+<a name="305"><font color="#888888 "><i>  305   </i></font></a>          <b>}</b>
+<a name="306"><font color="#888888 "><i>  306   </i></font></a>        <b>}</b>
+<a name="307"><font color="#888888 "><i>  307   </i></font></a>      <b>}</b> <font color="#112266"><b>while</b></font> (exitg1 == 0);
+<a name="308"><font color="#888888 "><i>  308   </i></font></a>
+<a name="309"><font color="#888888 "><i>  309   </i></font></a>      nb++;
+<a name="310"><font color="#888888 "><i>  310   </i></font></a>      tmp_data[nb - 1] = (int8_T)x;
+<a name="311"><font color="#888888 "><i>  311   </i></font></a>    <b>}</b>
+<a name="312"><font color="#888888 "><i>  312   </i></font></a>
+<a name="313"><font color="#888888 "><i>  313   </i></font></a>    m_st.site = &amp;<a href="#var_u_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_u_emlrtRSI');" target="_self"><font color="#1122aa">u_emlrtRSI</font></a>;
+<a name="314"><font color="#888888 "><i>  314   </i></font></a>    m_st.site = &amp;<a href="#var_t_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_t_emlrtRSI');" target="_self"><font color="#1122aa">t_emlrtRSI</font></a>;
+<a name="315"><font color="#888888 "><i>  315   </i></font></a>    m_st.site = &amp;<a href="#var_s_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_s_emlrtRSI');" target="_self"><font color="#1122aa">s_emlrtRSI</font></a>;
+<a name="316"><font color="#888888 "><i>  316   </i></font></a>    <font color="#112266"><b>if</b></font> ((!(1 &gt; nb)) &amp;&amp; (nb &gt; 2147483646)) <b>{</b>
+<a name="317"><font color="#888888 "><i>  317   </i></font></a>      n_st.site = &amp;<a href="#var_v_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_v_emlrtRSI');" target="_self"><font color="#1122aa">v_emlrtRSI</font></a>;
+<a name="318"><font color="#888888 "><i>  318   </i></font></a>      <a href="eml_int_forloop_overflow_check_c.html#fcn_check_forloop_overflow_error" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_check_forloop_overflow_error');" target="_self"><font color="#1122aa">check_forloop_overflow_error</font></a>(&amp;n_st);
+<a name="319"><font color="#888888 "><i>  319   </i></font></a>    <b>}</b>
+<a name="320"><font color="#888888 "><i>  320   </i></font></a>
+<a name="321"><font color="#888888 "><i>  321   </i></font></a>    <font color="#112266"><b>if</b></font> (1 &gt; nb) <b>{</b>
+<a name="322"><font color="#888888 "><i>  322   </i></font></a>      i0 = 0;
+<a name="323"><font color="#888888 "><i>  323   </i></font></a>    <b>}</b> <font color="#112266"><b>else</b></font> <b>{</b>
+<a name="324"><font color="#888888 "><i>  324   </i></font></a>      i0 = nb;
+<a name="325"><font color="#888888 "><i>  325   </i></font></a>    <b>}</b>
+<a name="326"><font color="#888888 "><i>  326   </i></font></a>
+<a name="327"><font color="#888888 "><i>  327   </i></font></a>    <font color="#112266"><b>if</b></font> (4 != i0) <b>{</b>
+<a name="328"><font color="#888888 "><i>  328   </i></font></a>      emlrtErrorWithMessageIdR2012b(&amp;j_st, &amp;<a href="#var_b_emlrtRTEI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_b_emlrtRTEI');" target="_self"><font color="#1122aa">b_emlrtRTEI</font></a>,
+<a name="329"><font color="#888888 "><i>  329   </i></font></a>        <font color="#1122ff">&quot;comm:OFDM:IndexNotUniquePerSym&quot;</font>, 0);
+<a name="330"><font color="#888888 "><i>  330   </i></font></a>    <b>}</b>
+<a name="331"><font color="#888888 "><i>  331   </i></font></a>
+<a name="332"><font color="#888888 "><i>  332   </i></font></a>    d_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="333"><font color="#888888 "><i>  333   </i></font></a>    e_st.site = &amp;<a href="#var_x_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_x_emlrtRSI');" target="_self"><font color="#1122aa">x_emlrtRSI</font></a>;
+<a name="334"><font color="#888888 "><i>  334   </i></font></a>    <font color="#112266"><b>if</b></font> (obj-&gt;pBPSKMod.isInitialized == 2) <b>{</b>
+<a name="335"><font color="#888888 "><i>  335   </i></font></a>      emlrtErrorWithMessageIdR2012b(&amp;e_st, &amp;<a href="generateOFDMSignal_data_c.html#var_emlrtRTEI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRTEI');" target="_self"><font color="#1122aa">emlrtRTEI</font></a>,
+<a name="336"><font color="#888888 "><i>  336   </i></font></a>        <font color="#1122ff">&quot;MATLAB:system:methodCalledWhenReleasedCodegen&quot;</font>, 3, 4, 5, <font color="#1122ff">&quot;reset&quot;</font>);
+<a name="337"><font color="#888888 "><i>  337   </i></font></a>    <b>}</b>
+<a name="338"><font color="#888888 "><i>  338   </i></font></a>
+<a name="339"><font color="#888888 "><i>  339   </i></font></a>    e_st.site = &amp;<a href="#var_y_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_y_emlrtRSI');" target="_self"><font color="#1122aa">y_emlrtRSI</font></a>;
+<a name="340"><font color="#888888 "><i>  340   </i></font></a>    <font color="#112266"><b>if</b></font> (obj-&gt;pDataOFDMMod.isInitialized == 2) <b>{</b>
+<a name="341"><font color="#888888 "><i>  341   </i></font></a>      emlrtErrorWithMessageIdR2012b(&amp;e_st, &amp;<a href="generateOFDMSignal_data_c.html#var_emlrtRTEI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_emlrtRTEI');" target="_self"><font color="#1122aa">emlrtRTEI</font></a>,
+<a name="342"><font color="#888888 "><i>  342   </i></font></a>        <font color="#1122ff">&quot;MATLAB:system:methodCalledWhenReleasedCodegen&quot;</font>, 3, 4, 5, <font color="#1122ff">&quot;reset&quot;</font>);
+<a name="343"><font color="#888888 "><i>  343   </i></font></a>    <b>}</b>
+<a name="344"><font color="#888888 "><i>  344   </i></font></a>  <b>}</b>
+<a name="345"><font color="#888888 "><i>  345   </i></font></a>
+<a name="346"><font color="#888888 "><i>  346   </i></font></a>  c_st.site = &amp;<a href="generateOFDMSignal_data_c.html#var_f_emlrtRSI" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_f_emlrtRSI');" target="_self"><font color="#1122aa">f_emlrtRSI</font></a>;
+<a name="347"><font color="#888888 "><i>  347   </i></font></a>  <a href="OFDMTransmitter_c.html#fcn_OFDMTransmitter_stepImpl" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_OFDMTransmitter_stepImpl');" target="_self"><font color="#1122aa">OFDMTransmitter_stepImpl</font></a>(&amp;c_st, obj, txSig);
+<a name="348"><font color="#888888 "><i>  348   </i></font></a>
+<a name="349"><font color="#888888 "><i>  349   </i></font></a>  <font color="#117755"><i>/*  [EOF] */</i></font>
+<a name="350"><font color="#888888 "><i>  350   </i></font></a>  *frameLen = 1280.0;
+<a name="351"><font color="#888888 "><i>  351   </i></font></a>
+<a name="352"><font color="#888888 "><i>  352   </i></font></a>  <font color="#117755"><i>/*  [EOF] */</i></font>
+<a name="353"><font color="#888888 "><i>  353   </i></font></a><b>}</b>
+<a name="354"><font color="#888888 "><i>  354   </i></font></a>
+<a name="355"><font color="#888888 "><i>  355   </i></font></a><font color="#112266"><b>void</b></font> <a name="fcn_generateOFDMSignal_init">generateOFDMSignal_init</a>(<font color="#112266"><b>void</b></font>)
+<a name="356"><font color="#888888 "><i>  356   </i></font></a><b>{</b>
+<a name="357"><font color="#888888 "><i>  357   </i></font></a>  <a href="#var_OFDMTX_not_empty" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_OFDMTX_not_empty');" target="_self"><font color="#1122aa">OFDMTX_not_empty</font></a> = false;
+<a name="358"><font color="#888888 "><i>  358   </i></font></a><b>}</b>
+<a name="359"><font color="#888888 "><i>  359   </i></font></a>
+<a name="360"><font color="#888888 "><i>  360   </i></font></a><font color="#117755"><i>/* End of code generation (generateOFDMSignal.c) */</i></font>
+<a name="361"><font color="#888888 "><i>  361   </i></font></a></pre>
+</td></tr></table>
+</p>
+</body>
+</html>

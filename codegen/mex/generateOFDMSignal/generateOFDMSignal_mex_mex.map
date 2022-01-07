@@ -1,0 +1,13 @@
+MEX {
+	global:
+		mexFunction;
+		mexfilerequiredapiversion;
+		emlrtMexFcnProperties;
+		generateOFDMSignal;
+		emlrt_marshallOut;
+		generateOFDMSignal_initialize;
+		generateOFDMSignal_terminate;
+		generateOFDMSignal_atexit;
+	local:
+		*;
+};

@@ -1,0 +1,23 @@
+<!-- saved from url=(0014)about:internet -->
+<html>
+<body>
+<script src="resources/eml_report_loadable_data.js"></script>
+<pre class="code">
+<span class="srcline"><span class="lineno"><a href="1,1" id="srcline1"> 1</a></span><span class="line"><span class="keyword">function</span> [<span class="var type1" id="S2T1U3">txSig</span>, <span class="var type1" id="S3T2U4">frameLen</span>] = generateOFDMSignal(<span class="var type2" id="S4T3V1U7">msg</span>, <span class="var type2" id="S5T2V2U8">numFrames</span>)</span></span>
+<span class="srcline"><span class="lineno"><a href="1,2" id="srcline2"> 2</a></span><span class="line"><span class="comment">%GENERATEOFDMSIGNAL: Generate OFDM signal based on the 802.11a standard.</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,3" id="srcline3"> 3</a></span><span class="line"><span class="comment">% This function returns the time domain signal and the frame length.</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,4" id="srcline4"> 4</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="1,5" id="srcline5"> 5</a></span><span class="line"><span class="comment">% Copyright 2013-2016 The MathWorks, Inc.</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,6" id="srcline6"> 6</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="1,7" id="srcline7"> 7</a></span><span class="line"><span class="keyword">persistent</span> <span class="var type1" id="S6T4U10">OFDMTX</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,8" id="srcline8"> 8</a></span><span class="line"><span class="keyword">if</span> <span class="mxinfo " id="T6:U6">isempty(<span class="var type0" id="S6T0U15">OFDMTX</span>)</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,9" id="srcline9"> 9</a></span><span class="line">    <span class="mxinfo " id="T4:U7"><span class="var type1" id="S6T4U18">OFDMTX</span> = <span class="mxinfo " id="T4:U9"><span class="fcn" id="F75N2:B20">OFDMTransmitter</span>(<span class="string">'PayloadMessage'</span>, <span class="var type1" id="S4T3U22">msg</span>, <span class="string">'NumFrames'</span>, <span class="var type1" id="S5T2U24">numFrames</span>)</span></span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="1,10" id="srcline10">10</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="1,11" id="srcline11">11</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="1,12" id="srcline12">12</a></span><span class="line"><span class="mxinfo " id="T1:U12"><span class="var type1" id="S2T1U27">txSig</span> = <span class="mxinfo " id="T1:U14"><span class="var type1" id="S6T4U29">OFDMTX</span>()</span></span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="1,13" id="srcline13">13</a></span><span class="line"><span class="mxinfo " id="T2:U16"><span class="var type1" id="S3T2U32">frameLen</span> = <span class="mxinfo " id="T2:U18"><span class="var type1" id="S6T4U34">OFDMTX</span>.<span class="fcn" id="F788N3:B35">FrameLength</span></span></span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="1,14" id="srcline14">14</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="1,15" id="srcline15">15</a></span><span class="line"><span class="comment">% [EOF]</span></span></span>
+</pre>
+</body>
+</html>

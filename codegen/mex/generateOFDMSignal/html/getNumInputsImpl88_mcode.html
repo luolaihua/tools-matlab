@@ -1,0 +1,188 @@
+<!-- saved from url=(0014)about:internet -->
+<html>
+<body>
+<script src="resources/eml_report_loadable_data.js"></script>
+<div class="dead">
+<pre class="code">
+<span class="srcline"><span class="lineno"><a href="28,1" id="srcline1">  1</a></span><span class="line"><span class="keyword">classdef</span> OFDMTransmitter &lt; matlab.System</span></span>
+<span class="srcline"><span class="lineno"><a href="28,2" id="srcline2">  2</a></span><span class="line"><span class="comment">% OFDMTransmitter Generate OFDM signal repeatedly for a payload message</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,3" id="srcline3">  3</a></span><span class="line"><span class="comment">% based on the 802.11a standard.</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,4" id="srcline4">  4</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,5" id="srcline5">  5</a></span><span class="line"><span class="comment">% Copyright 2014-2016 The MathWorks, Inc.</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,6" id="srcline6">  6</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,7" id="srcline7">  7</a></span><span class="line"><span class="keyword">properties</span> (Nontunable)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,8" id="srcline8">  8</a></span><span class="line">    <span class="comment">%SampleRate Sample rate    </span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,9" id="srcline9">  9</a></span><span class="line">    SampleRate = 20e6</span></span>
+<span class="srcline"><span class="lineno"><a href="28,10" id="srcline10"> 10</a></span><span class="line">    <span class="comment">%PayloadMessage Payload message</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,11" id="srcline11"> 11</a></span><span class="line">    PayloadMessage = <span class="string">'Live long and prosper, from the Communications System Toolbox Team at MathWorks!'</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,12" id="srcline12"> 12</a></span><span class="line">    <span class="comment">%NumFrames Number of frames to transmit</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,13" id="srcline13"> 13</a></span><span class="line">    NumFrames = 1</span></span>
+<span class="srcline"><span class="lineno"><a href="28,14" id="srcline14"> 14</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,15" id="srcline15"> 15</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,16" id="srcline16"> 16</a></span><span class="line"><span class="keyword">properties</span>(Nontunable, SetAccess = private, Dependent)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,17" id="srcline17"> 17</a></span><span class="line">    <span class="comment">%FrameLength Frame length</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,18" id="srcline18"> 18</a></span><span class="line">    FrameLength</span></span>
+<span class="srcline"><span class="lineno"><a href="28,19" id="srcline19"> 19</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,20" id="srcline20"> 20</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,21" id="srcline21"> 21</a></span><span class="line"><span class="keyword">properties</span>(Nontunable, Access = private)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,22" id="srcline22"> 22</a></span><span class="line">    pPayloadBits        <span class="comment">% Number of bits from payload message</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,23" id="srcline23"> 23</a></span><span class="line">    pNumPadBits         <span class="comment">% Number of random bits padded in each frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,24" id="srcline24"> 24</a></span><span class="line">    pNumOFDMSymbols     <span class="comment">% Number of OFDM symbols per frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,25" id="srcline25"> 25</a></span><span class="line">    pPreamble           <span class="comment">% Preamble for each frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,26" id="srcline26"> 26</a></span><span class="line">    pPilots             <span class="comment">% Pilots for each frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,27" id="srcline27"> 27</a></span><span class="line">    pBPSKMod            <span class="comment">% BPSK Modulator System object</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,28" id="srcline28"> 28</a></span><span class="line">    pDataOFDMMod        <span class="comment">% OFDM Modulator System object </span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,29" id="srcline29"> 29</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,30" id="srcline30"> 30</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,31" id="srcline31"> 31</a></span><span class="line"><span class="keyword">properties</span>(Constant, Access = private) <span class="comment">% OFDM Modulator configuration</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,32" id="srcline32"> 32</a></span><span class="line">    FFTLength            = 64</span></span>
+<span class="srcline"><span class="lineno"><a href="28,33" id="srcline33"> 33</a></span><span class="line">    NumGuardBandCarriers = [6; 5]</span></span>
+<span class="srcline"><span class="lineno"><a href="28,34" id="srcline34"> 34</a></span><span class="line">    NumDataCarriers      = 48</span></span>
+<span class="srcline"><span class="lineno"><a href="28,35" id="srcline35"> 35</a></span><span class="line">    CyclicPrefixLength   = 16</span></span>
+<span class="srcline"><span class="lineno"><a href="28,36" id="srcline36"> 36</a></span><span class="line">    PilotCarrierIndices  = [12;26;40;54]</span></span>
+<span class="srcline"><span class="lineno"><a href="28,37" id="srcline37"> 37</a></span><span class="line">    NumOFDMSymInPreamble = 5</span></span>
+<span class="srcline"><span class="lineno"><a href="28,38" id="srcline38"> 38</a></span><span class="line">    NumBitsPerCharacter  = 7</span></span>
+<span class="srcline"><span class="lineno"><a href="28,39" id="srcline39"> 39</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,40" id="srcline40"> 40</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,41" id="srcline41"> 41</a></span><span class="line"><span class="keyword">methods</span>        </span></span>
+<span class="srcline"><span class="lineno"><a href="28,42" id="srcline42"> 42</a></span><span class="line">  <span class="keyword">function</span> obj = OFDMTransmitter(varargin)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,43" id="srcline43"> 43</a></span><span class="line">    setProperties(obj, nargin, varargin{:});</span></span>
+<span class="srcline"><span class="lineno"><a href="28,44" id="srcline44"> 44</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,45" id="srcline45"> 45</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,46" id="srcline46"> 46</a></span><span class="line">  <span class="keyword">function</span> set.SampleRate(obj, Rs)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,47" id="srcline47"> 47</a></span><span class="line">    propName = <span class="string">'SampleRate'</span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,48" id="srcline48"> 48</a></span><span class="line">    validateattributes(Rs, {<span class="string">'double'</span>}, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,49" id="srcline49"> 49</a></span><span class="line">        {<span class="string">'real'</span>,<span class="string">'scalar'</span>,<span class="string">'positive'</span>,<span class="string">'finite'</span>}, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,50" id="srcline50"> 50</a></span><span class="line">        [class(obj) <span class="string">'.'</span> propName], propName); </span></span>
+<span class="srcline"><span class="lineno"><a href="28,51" id="srcline51"> 51</a></span><span class="line">    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,52" id="srcline52"> 52</a></span><span class="line">	obj.SampleRate = Rs;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,53" id="srcline53"> 53</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,54" id="srcline54"> 54</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,55" id="srcline55"> 55</a></span><span class="line">  <span class="keyword">function</span> set.PayloadMessage(obj, msg)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,56" id="srcline56"> 56</a></span><span class="line">    propName = <span class="string">'PayloadMessage'</span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,57" id="srcline57"> 57</a></span><span class="line">    validateattributes(msg, {<span class="string">'char'</span>}, {<span class="string">'row'</span>}, <span class="keyword">...</span><span class="comment"> </span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,58" id="srcline58"> 58</a></span><span class="line">        [class(obj) <span class="string">'.'</span> propName], propName); </span></span>
+<span class="srcline"><span class="lineno"><a href="28,59" id="srcline59"> 59</a></span><span class="line">    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,60" id="srcline60"> 60</a></span><span class="line">    obj.PayloadMessage = msg;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,61" id="srcline61"> 61</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,62" id="srcline62"> 62</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,63" id="srcline63"> 63</a></span><span class="line">  <span class="keyword">function</span> set.NumFrames(obj, numFrm)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,64" id="srcline64"> 64</a></span><span class="line">    propName = <span class="string">'NumFrames'</span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,65" id="srcline65"> 65</a></span><span class="line">    validateattributes(numFrm, {<span class="string">'double'</span>}, <span class="keyword">...</span><span class="comment"> </span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,66" id="srcline66"> 66</a></span><span class="line">        {<span class="string">'real'</span>,<span class="string">'scalar'</span>,<span class="string">'positive'</span>,<span class="string">'integer'</span>,<span class="string">'finite'</span>}, <span class="keyword">...</span><span class="comment"> </span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,67" id="srcline67"> 67</a></span><span class="line">        [class(obj) <span class="string">'.'</span> propName], propName); </span></span>
+<span class="srcline"><span class="lineno"><a href="28,68" id="srcline68"> 68</a></span><span class="line">    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,69" id="srcline69"> 69</a></span><span class="line">    obj.NumFrames = numFrm;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,70" id="srcline70"> 70</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,71" id="srcline71"> 71</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,72" id="srcline72"> 72</a></span><span class="line">  <span class="keyword">function</span> frameLen = get.FrameLength(obj)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,73" id="srcline73"> 73</a></span><span class="line">    frameLen = ceil(length(obj.PayloadMessage)*obj.NumBitsPerCharacter/obj.NumDataCarriers) * <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,74" id="srcline74"> 74</a></span><span class="line">               (obj.FFTLength+obj.CyclicPrefixLength) + obj.NumOFDMSymInPreamble*obj.FFTLength;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,75" id="srcline75"> 75</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,76" id="srcline76"> 76</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,77" id="srcline77"> 77</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,78" id="srcline78"> 78</a></span><span class="line"><span class="keyword">methods</span>(Access = protected)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,79" id="srcline79"> 79</a></span><span class="line">  <span class="keyword">function</span> setupImpl(obj)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,80" id="srcline80"> 80</a></span><span class="line">    coder.extrinsic(<span class="string">'dec2bin'</span>,<span class="string">'getOFDMPreambleAndPilot'</span>);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,81" id="srcline81"> 81</a></span><span class="line">    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,82" id="srcline82"> 82</a></span><span class="line">    <span class="comment">% Convert message to bits</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,83" id="srcline83"> 83</a></span><span class="line">    msgInBits = coder.const(double(dec2bin(obj.PayloadMessage, obj.NumBitsPerCharacter).'));</span></span>
+<span class="srcline"><span class="lineno"><a href="28,84" id="srcline84"> 84</a></span><span class="line">    obj.pPayloadBits = msgInBits(:) - 48;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,85" id="srcline85"> 85</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,86" id="srcline86"> 86</a></span><span class="line">    <span class="comment">% Calculate number of OFDM symbols per frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,87" id="srcline87"> 87</a></span><span class="line">    obj.pNumOFDMSymbols = ceil(length(obj.pPayloadBits)/obj.NumDataCarriers);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,88" id="srcline88"> 88</a></span><span class="line">    <span class="comment">% Calculate number of bits padded in each frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,89" id="srcline89"> 89</a></span><span class="line">    obj.pNumPadBits = obj.NumDataCarriers * obj.pNumOFDMSymbols - length(obj.pPayloadBits);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,90" id="srcline90"> 90</a></span><span class="line">    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,91" id="srcline91"> 91</a></span><span class="line">    <span class="comment">% Get preamble for each frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,92" id="srcline92"> 92</a></span><span class="line">    obj.pPreamble = coder.const(double(getOFDMPreambleAndPilot(<span class="string">'Preamble'</span>, obj.FFTLength, obj.NumGuardBandCarriers)));</span></span>
+<span class="srcline"><span class="lineno"><a href="28,93" id="srcline93"> 93</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,94" id="srcline94"> 94</a></span><span class="line">    <span class="comment">% Get pilot for each frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,95" id="srcline95"> 95</a></span><span class="line">    obj.pPilots = coder.const(double(getOFDMPreambleAndPilot(<span class="string">'Pilot'</span>, obj.pNumOFDMSymbols)));</span></span>
+<span class="srcline"><span class="lineno"><a href="28,96" id="srcline96"> 96</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,97" id="srcline97"> 97</a></span><span class="line">    <span class="comment">% BPSK modulator</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,98" id="srcline98"> 98</a></span><span class="line">    obj.pBPSKMod = comm.BPSKModulator;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,99" id="srcline99"> 99</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,100" id="srcline100">100</a></span><span class="line">    <span class="comment">% OFDM modulator</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,101" id="srcline101">101</a></span><span class="line">    obj.pDataOFDMMod = comm.OFDMModulator(<span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,102" id="srcline102">102</a></span><span class="line">        <span class="string">'FFTLength'</span> ,           obj.FFTLength, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,103" id="srcline103">103</a></span><span class="line">        <span class="string">'NumGuardBandCarriers'</span>, obj.NumGuardBandCarriers, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,104" id="srcline104">104</a></span><span class="line">        <span class="string">'InsertDCNull'</span>,         true, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,105" id="srcline105">105</a></span><span class="line">        <span class="string">'PilotInputPort'</span>,       true, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,106" id="srcline106">106</a></span><span class="line">        <span class="string">'PilotCarrierIndices'</span>,  obj.PilotCarrierIndices, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,107" id="srcline107">107</a></span><span class="line">        <span class="string">'CyclicPrefixLength'</span>,   obj.CyclicPrefixLength, <span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,108" id="srcline108">108</a></span><span class="line">        <span class="string">'NumSymbols'</span>,           obj.pNumOFDMSymbols);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,109" id="srcline109">109</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,110" id="srcline110">110</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,111" id="srcline111">111</a></span><span class="line">  <span class="keyword">function</span> resetImpl(obj)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,112" id="srcline112">112</a></span><span class="line">    reset(obj.pBPSKMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,113" id="srcline113">113</a></span><span class="line">    reset(obj.pDataOFDMMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,114" id="srcline114">114</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,115" id="srcline115">115</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,116" id="srcline116">116</a></span><span class="line">  <span class="keyword">function</span> y = stepImpl(obj)    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,117" id="srcline117">117</a></span><span class="line">    <span class="comment">% BPSK modulation for one frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,118" id="srcline118">118</a></span><span class="line">    symPostBPSK = obj.pBPSKMod(<span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,119" id="srcline119">119</a></span><span class="line">        [obj.pPayloadBits; randi([0 1], obj.pNumPadBits, 1)]);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,120" id="srcline120">120</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,121" id="srcline121">121</a></span><span class="line">    <span class="comment">% OFDM modulation for one frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,122" id="srcline122">122</a></span><span class="line">    symPostOFDM = obj.pDataOFDMMod(<span class="keyword">...</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,123" id="srcline123">123</a></span><span class="line">        reshape(symPostBPSK, obj.NumDataCarriers, obj.pNumOFDMSymbols), obj.pPilots);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,124" id="srcline124">124</a></span><span class="line">    </span></span>
+<span class="srcline"><span class="lineno"><a href="28,125" id="srcline125">125</a></span><span class="line">    <span class="comment">% Repeat the frame</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,126" id="srcline126">126</a></span><span class="line">    y = repmat([obj.pPreamble; symPostOFDM], obj.NumFrames, 1);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,127" id="srcline127">127</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,128" id="srcline128">128</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,129" id="srcline129">129</a></span><span class="line">  <span class="keyword">function</span> releaseImpl(obj)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,130" id="srcline130">130</a></span><span class="line">    release(obj.pBPSKMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,131" id="srcline131">131</a></span><span class="line">    release(obj.pDataOFDMMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,132" id="srcline132">132</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,133" id="srcline133">133</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,134" id="srcline134">134</a></span><span class="line">  <span class="keyword">function</span> s = saveObjectImpl(obj)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,135" id="srcline135">135</a></span><span class="line">    s = saveObjectImpl@matlab.System(obj);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,136" id="srcline136">136</a></span><span class="line">    <span class="keyword">if</span> isLocked(obj)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,137" id="srcline137">137</a></span><span class="line">        s.pBPSKMod        = matlab.System.saveObject(obj.pBPSKMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,138" id="srcline138">138</a></span><span class="line">        s.pDataOFDMMod    = matlab.System.saveObject(obj.pDataOFDMMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,139" id="srcline139">139</a></span><span class="line">        s.pPayloadBits    = obj.pPayloadBits;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,140" id="srcline140">140</a></span><span class="line">        s.pNumPadBits     = obj.pNumPadBits;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,141" id="srcline141">141</a></span><span class="line">        s.pNumOFDMSymbols = obj.pNumOFDMSymbols;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,142" id="srcline142">142</a></span><span class="line">        s.pPreamble       = obj.pPreamble;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,143" id="srcline143">143</a></span><span class="line">        s.pPilots         = obj.pPilots;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,144" id="srcline144">144</a></span><span class="line">    <span class="keyword">end</span>      </span></span>
+<span class="srcline"><span class="lineno"><a href="28,145" id="srcline145">145</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,146" id="srcline146">146</a></span><span class="line">  </span></span>
+<span class="srcline"><span class="lineno"><a href="28,147" id="srcline147">147</a></span><span class="line">  <span class="keyword">function</span> loadObjectImpl(obj, s, wasLocked)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,148" id="srcline148">148</a></span><span class="line">    <span class="keyword">if</span> wasLocked</span></span>
+<span class="srcline"><span class="lineno"><a href="28,149" id="srcline149">149</a></span><span class="line">        obj.pBPSKMod        = matlab.System.loadObject(s.pBPSKMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,150" id="srcline150">150</a></span><span class="line">        obj.pDataOFDMMod    = matlab.System.loadObject(s.pDataOFDMMod);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,151" id="srcline151">151</a></span><span class="line">        obj.pPayloadBits    = s.pPayloadBits;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,152" id="srcline152">152</a></span><span class="line">        obj.pNumPadBits     = s.pNumPadBits;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,153" id="srcline153">153</a></span><span class="line">        obj.pNumOFDMSymbols = s.pNumOFDMSymbols;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,154" id="srcline154">154</a></span><span class="line">        obj.pPreamble       = s.pPreamble;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,155" id="srcline155">155</a></span><span class="line">        obj.pPilots         = s.pPilots;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,156" id="srcline156">156</a></span><span class="line">    <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,157" id="srcline157">157</a></span><span class="line">    loadObjectImpl@matlab.System(obj, s);</span></span>
+<span class="srcline"><span class="lineno"><a href="28,158" id="srcline158">158</a></span><span class="line">  <span class="keyword">end</span></span></span>
+</pre>
+</div>
+<pre class="code">
+<span class="srcline"><span class="lineno"><a href="28,159" id="srcline159">159</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,160" id="srcline160">160</a></span><span class="line">  <span class="keyword">function</span> <span class="var type1" id="S89T2U688">num</span> = getNumInputsImpl(<span class="mxinfo " id="T4:U2">~</span>)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,161" id="srcline161">161</a></span><span class="line">    <span class="mxinfo " id="T2:U3"><span class="var type1" id="S89T2U694">num</span> = <span class="mxinfo " id="T2:U5">0</span></span>;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,162" id="srcline162">162</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,163" id="srcline163">163</a></span><span class="line">    </span></span>
+</pre>
+<div class="dead">
+<pre class="code">
+<span class="srcline"><span class="lineno"><a href="28,164" id="srcline164">164</a></span><span class="line">  <span class="keyword">function</span> flag = isOutputComplexityLockedImpl(~,~)</span></span>
+<span class="srcline"><span class="lineno"><a href="28,165" id="srcline165">165</a></span><span class="line">    flag = true;</span></span>
+<span class="srcline"><span class="lineno"><a href="28,166" id="srcline166">166</a></span><span class="line">  <span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,167" id="srcline167">167</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,168" id="srcline168">168</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,169" id="srcline169">169</a></span><span class="line"><span class="keyword">end</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,170" id="srcline170">170</a></span><span class="line"></span></span>
+<span class="srcline"><span class="lineno"><a href="28,171" id="srcline171">171</a></span><span class="line"><span class="comment">% [EOF]</span></span></span>
+<span class="srcline"><span class="lineno"><a href="28,172" id="srcline172">172</a></span><span class="line"> </span></span>
+</pre>
+</div>
+</body>
+</html>

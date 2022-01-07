@@ -1,0 +1,12 @@
+close;
+clear all;
+clc;
+A1 = imread('1.jpg');
+A2 = imread('2.jpg');
+K = imlincomb(0.5,A1,0.5,A2);
+subplot(1,3,1),subimage(A1);
+title('Ô­Ê¼Í¼Ïñ1');
+subplot(1,3,2),subimage(A2);
+title('Ô­Ê¼Í¼Ïñ2');
+subplot(1,3,3),subimage(K);
+title('0.5XÍ¼Ïñ1+0.5XÍ¼Ïñ2');
